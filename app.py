@@ -30,6 +30,8 @@ def submit():
     # Validate the tickers and clean the data
     tickers_list = [ticker.strip().upper() for ticker in tickers_list]
     valid_tickers = [ticker for ticker in tickers_list if is_valid_ticker(ticker)]
+    
+    prices_list = [float(price.strip()) for price in prices_list]
         
     table = create_table(valid_tickers)
     
@@ -42,7 +44,7 @@ def submit():
     print(ticker_list)
     print(suggested_ticker_list)
 
-    plot_two_portfolios_with_regression(ticker_list,suggested_ticker_list, all_closings )
+    plot_two_portfolios_with_regression(ticker_list,suggested_ticker_list,prices_list, all_closings )
 
 
     return render_template('results.html', tables=table.to_html(classes='data-table', index=False))

@@ -12,20 +12,22 @@ def calculate_volatility(ticker):
     volatility = hist['Close'].pct_change().std() * (252 ** 0.5)
     return volatility
 
-def plot_two_portfolios_with_regression(portfolio_list, adjusted_portfolio_list, close_prices_df):
+def plot_two_portfolios_with_regression(portfolio_list, adjusted_portfolio_list, amount, close_prices_df):
     # Ensure the 'Date' column is in datetime format and convert to UTC (or remove timezone)
     close_prices_df['Date'] = pd.to_datetime(close_prices_df['Date'], utc=True).dt.tz_convert(None)
-    
+
     # Function to calculate the portfolio value
-    def calculate_portfolio_value(ticker_list, close_prices_df):
+    def calculate_portfolio_value(ticker_list, amount, close_prices_df):
         portfolio_df = close_prices_df[close_prices_df['Ticker'].isin(ticker_list)].copy()
         pivot_df = portfolio_df.pivot(index='Date', columns='Ticker', values='Close')
+        for i, ticker in enumerate(ticker_list):
+            pivot_df[ticker] = pivot_df[ticker] / (pivot_df[ticker][pivot_df.index[-1]] / amount[i])
         portfolio_value = pivot_df.sum(axis=1)
         return portfolio_value
 
     # Calculate portfolio values for both portfolios
-    portfolio_value = calculate_portfolio_value(portfolio_list, close_prices_df)
-    adjusted_portfolio_value = calculate_portfolio_value(adjusted_portfolio_list, close_prices_df)
+    portfolio_value = calculate_portfolio_value(portfolio_list, amount, close_prices_df)
+    adjusted_portfolio_value = calculate_portfolio_value(adjusted_portfolio_list, amount, close_prices_df)
 
     # Plot the portfolio values
     plt.figure(figsize=(14, 7))
@@ -43,18 +45,28 @@ def plot_two_portfolios_with_regression(portfolio_list, adjusted_portfolio_list,
     adjusted_regression_line = np.polyval(adjusted_coefficients, adjusted_date_numeric)
     plt.plot(adjusted_portfolio_value.index, adjusted_regression_line, label='Adjusted Portfolio Regression Line', color='orange', linestyle='--')
 
+    # Add vertical line for present day
+    present_day = pd.Timestamp.now().normalize()  # Get today's date without time
+    plt.axvline(x=present_day, color='black', linestyle=':', label='Present Day')
+
+    # Project future values for the next 3 months
+    future_dates = pd.date_range(start=present_day, periods=90, freq='D')
+    future_numeric = (future_dates - portfolio_value.index.min()).days
+
+    # Calculate projected values
+    projected_portfolio_values = np.polyval(coefficients, future_numeric)
+    projected_adjusted_values = np.polyval(adjusted_coefficients, future_numeric)
+
+    # Plot projections
+    plt.plot(future_dates, projected_portfolio_values, label='Projected Portfolio Value', color='red', linestyle='--')
+    plt.plot(future_dates, projected_adjusted_values, label='Projected Adjusted Portfolio Value', color='orange', linestyle='--')
+
     # Plot formatting
-    plt.title(f'Portfolio Comparison Over Time')
+    plt.title('Portfolio Comparison Over Time')
     plt.xlabel('Date')
     plt.ylabel('Portfolio Value (USD)')
     plt.grid(True)
     plt.legend()
-
-    # Show the final value as text on the plot
-    plt.text(portfolio_value.index[-1], portfolio_value.iloc[-1],
-             f'Final Value: ${portfolio_value.iloc[-1]:.2f}', fontsize=12, color='blue')
-    plt.text(adjusted_portfolio_value.index[-1], adjusted_portfolio_value.iloc[-1],
-             f'Adjusted Final Value: ${adjusted_portfolio_value.iloc[-1]:.2f}', fontsize=12, color='green')
 
     plt.tight_layout()
     plt.savefig('static/images/portfolio_plot.png')
