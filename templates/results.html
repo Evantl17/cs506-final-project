@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Stock Data Results</h1>
+    <div class="results-container">
+        {% for ticker in tables %}
+            <h2>{{ ticker }}</h2>
+            <p>Price: {{ prices_list[loop.index0] }}</p>
+            {{ tables[ticker] | safe }}
+        {% endfor %}
+    </div>
+</body>
+</html>

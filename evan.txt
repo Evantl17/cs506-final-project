@@ -1,0 +1,5 @@
+<form action="/submit" method="POST">
+        <label for="tickers">Stock Tickers (comma-separated):</label><br>
+        <input type="text" id="tickers" name="tickers" required><br><br>
+        <input type="submit" value="Submit">
+    </form>

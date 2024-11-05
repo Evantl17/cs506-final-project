@@ -21,21 +21,29 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    tickers = request.form['tickers']  
-    tickers_list = tickers.split(",") 
-    tickers_list = [ticker.strip().upper() for ticker in tickers_list] 
-    print(tickers_list)
-    start_date = '2014-01-01' 
-    end_date = '2024-01-01'   
+    tickers_list = request.form.getlist('tickers')
+    prices_list = request.form.getlist('prices')
 
-    # Validate the tickers
+    # Validate the tickers and clean the data
+    tickers_list = [ticker.strip().upper() for ticker in tickers_list]
     valid_tickers = [ticker for ticker in tickers_list if is_valid_ticker(ticker)]
-    data = yf.download(valid_tickers, start=start_date, end=end_date)
 
+    # Fetch stock data
+    start_date = '2014-01-01'
+    end_date = '2024-01-01'
+    data = yf.download(valid_tickers, start=start_date, end=end_date)
     cleaned_data = data.dropna()
 
+    # Prepare adjusted close price data for each ticker, limited to the last 20 values
     adj_close_data = cleaned_data['Adj Close']
-    return f"{adj_close_data.isna().sum()}"
+
+    # Convert the data to HTML tables, limiting to the last 20 values
+    tables = {}
+    for ticker in valid_tickers:
+        ticker_data = adj_close_data[[ticker]].dropna().tail(20)  # Get the last 20 values
+        tables[ticker] = ticker_data.to_html(classes='data-table', border=0)
+
+    return render_template('results.html', tables=tables, tickers_list=tickers_list, prices_list=prices_list)
 
 if __name__ == '__main__':
     app.run(debug=True)

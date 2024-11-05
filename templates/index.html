@@ -4,14 +4,38 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Portfolio Optimizer</title>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
-    <h1>Enter Your Stock Tickers</h1>
-    <form action="/submit" method="POST">
-        <label for="tickers">Stock Tickers (comma-separated):</label><br>
-        <input type="text" id="tickers" name="tickers" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
+    <header>
+        <div class="title">
+            <h1>Portfolio Optimizer</h1>
+        </div>
+        <div class="groupMembers">
+            <ul>
+                <li><a href="#">Evan Lapid</a></li>
+                <li><a href="#">Josh Leeds</a></li>
+                <li><a href="#">Thomas Youssef</a></li>
+                <li><a href="#">Jaden Hsiao</a></li>
+                <li><a href="#">Tim McCorry</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="container">
+        <form action="/submit" method="POST">
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="tickers">Stock Ticker:</label><br>
+                    <input type="text" name="tickers" required><br><br>
+                    <label for="prices">Price per Stock (dollar amount):</label><br>
+                    <input type="text" name="prices"><br><br>
+                </div>
+            </div>
+            <button type="button" onclick="addInputFields()">Add More</button><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 </body>
 </html>
