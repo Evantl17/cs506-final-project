@@ -2,10 +2,6 @@ import yfinance as yf
 import pandas as pd
 from flask import Flask, render_template, request
 
-# Set environment variable to skip loading .env file
-import os
-os.environ['FLASK_SKIP_DOTENV'] = '1'
-
 app = Flask(__name__)
 
 # Function to validate the ticker
