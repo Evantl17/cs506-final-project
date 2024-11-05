@@ -6,15 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Data Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .data-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h1>Stock Data Results</h1>
     <div class="results-container">
-        {% for ticker in tables %}
-            <h2>{{ ticker }}</h2>
-            <p>Price: {{ prices_list[loop.index0] }}</p>
-            {{ tables[ticker] | safe }}
-        {% endfor %}
+        <table class="data-table">
+            {{ tables | safe }}
+        </table>
+    </div>
+    <div class="plot-container">
+        <h2>Portfolio Comparison Plot</h2>
+        <img src="{{ url_for('static', filename='images/portfolio_plot.png') }}" alt="Portfolio Comparison Plot">
     </div>
 </body>
 </html>
