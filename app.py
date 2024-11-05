@@ -30,10 +30,10 @@ def submit():
     # Validate the tickers and clean the data
     tickers_list = [ticker.strip().upper() for ticker in tickers_list]
     valid_tickers = [ticker for ticker in tickers_list if is_valid_ticker(ticker)]
+        
+    table = create_table(valid_tickers)
     
-    print(valid_tickers)
-    
-    table = create_table(tickers_list)
+    print(table)
         
     all_closings = pd.read_csv('closingPrices.csv')
     ticker_list = table['Ticker'].tolist()
@@ -44,15 +44,6 @@ def submit():
 
     plot_two_portfolios_with_regression(ticker_list,suggested_ticker_list, all_closings )
 
-
-    # Prepare adjusted close price data for each ticker, limited to the last 20 values
-    # adj_close_data = cleaned_data['Adj Close']
-
-    # Convert the data to HTML tables, limiting to the last 20 values
-    # tables = {}
-    # for ticker in valid_tickers:
-    #     ticker_data = adj_close_data[[ticker]].dropna().tail(20)  # Get the last 20 values
-    #     tables[ticker] = ticker_data.to_html(classes='data-table', border=0)
 
     return render_template('results.html', tables=table.to_html(classes='data-table', index=False))
 

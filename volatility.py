@@ -61,7 +61,7 @@ def plot_two_portfolios_with_regression(portfolio_list, adjusted_portfolio_list,
     plt.close()
 
 def create_table(tickers):
-    sp500_tickers = pd.read_csv('/Users/toto211738/Documents/GitHub/cs506-final-project/sp500_tickers_full_info.csv')
+    sp500_tickers = pd.read_csv('sp500_tickers_full_info.csv')
 
     table = pd.DataFrame()
     for ticker in tickers:
@@ -80,6 +80,6 @@ def create_table(tickers):
         
         
         table = table._append({'Ticker': ticker, 'Industry': industry, 'Volatility': volatility, "Suggested Ticker" : min_volatility['Ticker'], "Suggested Company Volatility" : min_volatility['volatility']}, ignore_index=True)
-        return table
+    return table
 
 
