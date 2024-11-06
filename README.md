@@ -13,9 +13,9 @@ This video includes a 5-minute presentation explaining the project's goals, deta
 ## Example Table and Graph
 Here are some examples of the project’s output:
 
-![Stock Analysis Graph](images/img1.png)
+![Stock Analysis Graph](img.png)
 
-![Risk Assessment Table](images/img2.png)
+![Risk Assessment Table](img2.png)
 
 ## What We Will Do
 At the midpoint, we have a good foundation of what we want the final app to look like. Now that we have a good understanding of accessing data through `yfinance`, which we can use to make models and add features from, we aim to improve the accuracy of our models to create the most useful tool. We have promising preliminary results but need to run these models on testing data to ensure they are appropriately fit. Adding these new features to create more metrics on the portfolio is the goal—while ensuring that the process for validating and fine-tuning these models is smooth.
