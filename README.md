@@ -13,7 +13,7 @@ This video includes a 5-minute presentation explaining the project's goals, deta
 ## Example Table and Graph
 Here are some examples of the project’s output:
 
-![Stock Analysis Graph](img.png)
+![Stock Analysis Graph](img1.png)
 
 ![Risk Assessment Table](img2.png)
 
