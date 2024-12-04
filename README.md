@@ -1,25 +1,21 @@
-# cs506-final-project
+# Midterm Report and Presentation
 
-Description of the project.
+## Project Details
+This project will take in users' stocks and dollar amounts invested and analyze the stocks to predict future value and assess the stocks' risk according to volatility. Using the volatility score, a same-sector stock will be suggested for each holding, and future value will be predicted based on historic data for the current portfolio and the risk-averse portfolio.
 
-Our project takes the users investment portfolio, and displays a variety of data. This includes the calculated risk, overall portfolio ratings, individual stock ratings. Additonally, this project will give the user various recommendations on how to reduce risk, and maximize profit. Our target audience is entry-level investors who want to maximize returns while minimizing risk. It will provide the user complete oversight of their investments.
+## How to Use Project
+1. Use the `makefile` to install dependencies from the `requirements.txt` and set up the virtual environment.
 
-Clear goal(s) (e.g. Successfully predict the number of students attending lecture based on the weather report).
+## Presentation Link
+[Watch the presentation on YouTube](https://youtu.be/J7ZJD8LqPIA)  
+This video includes a 5-minute presentation explaining the project's goals, details, and the data science methods used to complete them.
 
-Succesfully predict future asset returns, compute accurate risk measurements. Create portfolio that minimizes risk. 
+## Example Table and Graph
+Here are some examples of the project’s output:
 
-What data needs to be collected and how you will collect it (e.g. scraping xyz website or polling students).
+![Stock Analysis Graph](img1.png)
 
-We need historical stock market data which we will get from yfinance. We also need the users portfolio which will need to be inputed by the user.
+![Risk Assessment Table](img2.png)
 
-How you plan on modeling the data (e.g. clustering, fitting a linear model, decision trees, XGBoost, some sort of deep learning method, etc.).
-
-The data will be modeled via clustering. Clustering will be used to identify where the user's portfolio is high or low rish with the given rating. 
-
-How do you plan on visualizing the data? (e.g. interactive t-SNE plot, scatter plot of feature x vs. feature y).
-
-We are going to use the modern portfolio theory to make a scatter plot of volatility vs expected return. 
-
-What is your test plan? (e.g. withhold 20% of data for testing, train on data collected in October and test on data collected in November, etc.).
-
-We would withhold 20% for testing, and train the rest on data collected in the past decade of data. 
+## What We Will Do
+At the midpoint, we have a good foundation of what we want the final app to look like. Now that we have a good understanding of accessing data through `yfinance`, which we can use to make models and add features from, we aim to improve the accuracy of our models to create the most useful tool. We have promising preliminary results but need to run these models on testing data to ensure they are appropriately fit. Adding these new features to create more metrics on the portfolio is the goal—while ensuring that the process for validating and fine-tuning these models is smooth.
