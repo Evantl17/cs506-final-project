@@ -20,18 +20,130 @@
         .data-table th {
             background-color: #f2f2f2;
         }
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .flex-item {
+            flex: 1 1 45%;
+            max-width: 45%;
+            text-align: center;
+        }
+        .flex-item img {
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
     </style>
 </head>
+<script>
+    // Wait for the document to fully load
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all tables with the class 'data-table'
+        const tables = document.querySelectorAll(".data-table");
+
+        tables.forEach(table => {
+            // Add rounded corners to the table
+            table.style.borderCollapse = "separate";
+            table.style.borderSpacing = "0";
+            table.style.borderRadius = "8px";
+            table.style.overflow = "hidden";
+
+            // Add box shadow for aesthetics
+            table.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+
+            // Adjust font size and cell padding
+            table.style.fontSize = "16px";
+            const cells = table.querySelectorAll("th, td");
+            cells.forEach(cell => {
+                cell.style.padding = "12px";
+                cell.style.border = "1px solid #ddd";
+                cell.style.textAlign = "center";
+            });
+
+            // Style the header row
+            const headers = table.querySelectorAll("th");
+            headers.forEach(header => {
+                header.style.backgroundColor = "#f2f2f2";
+            });
+
+            // Add hover effect for table rows
+            const rows = table.querySelectorAll("tbody tr");
+            rows.forEach(row => {
+                row.addEventListener("mouseover", () => {
+                    row.style.backgroundColor = "#f1f1f1";
+                });
+                row.addEventListener("mouseout", () => {
+                    row.style.backgroundColor = "";
+                });
+            });
+
+            // Highlight volatility cells based on their values
+            const volatilityCells = table.querySelectorAll("td:nth-child(3)"); // Assuming the 3rd column is Volatility
+            volatilityCells.forEach(cell => {
+                const value = cell.textContent.trim();
+
+                // Apply background color based on volatility category
+                if (value === "Low Volatility") {
+                    cell.style.backgroundColor = "#d4edda"; // Greenish
+                } else if (value === "Moderate Volatility") {
+                    cell.style.backgroundColor = "#fff3cd"; // Yellowish
+                } else if (value === "High Volatility") {
+                    cell.style.backgroundColor = "#f8d7da"; // Light Reddish
+                } else if (value === "Extreme Volatility") {
+                    cell.style.backgroundColor = "#f5c6cb"; // Darker Reddish
+                }
+            });
+        });
+    });
+</script>
+
 <body>
     <h1>Stock Data Results</h1>
-    <div class="results-container">
-        <table class="data-table">
-            {{ tables | safe }}
-        </table>
+
+    <div class="section">
+        <h2>User Portfolio</h2>
+        <div class="flex-container">
+            <div class="flex-item">
+                <table class="data-table">
+                    {{ table1 | safe }}
+                </table>
+            </div>
+            <div class="flex-item">
+                <img src="{{ url_for('static', filename='images/user_portfolio_projection.png') }}" alt="User Portfolio Projection">
+            </div>
+        </div>
     </div>
-    <div class="plot-container">
-        <h2>Portfolio Comparison Plot</h2>
-        <img src="{{ url_for('static', filename='images/portfolio_plot.png') }}" alt="Portfolio Comparison Plot">
+
+    <div class="section">
+        <h2>Suggested Portfolio</h2>
+        <div class="flex-container">
+            <div class="flex-item">
+                <table class="data-table">
+                    {{ table2 | safe }}
+                </table>
+            </div>
+            <div class="flex-item">
+                <img src="{{ url_for('static', filename='images/suggested_portfolio_projection.png') }}" alt="Suggested Portfolio Projection">
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Comparison of Regression Lines</h2>
+        <div class="flex-container">
+            <div class="flex-item">
+                <img src="{{ url_for('static', filename='images/comparison_regression_lines.png') }}" alt="Comparison of Regression Lines">
+            </div>
+        </div>
     </div>
 </body>
 </html>
