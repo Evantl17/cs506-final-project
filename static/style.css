@@ -39,6 +39,9 @@ header {
 /* Container and form styles */
 .container {
     margin-top: 20px;
+    width:75%;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 form {
@@ -52,6 +55,7 @@ form {
 /* Styles for input groups */
 .input-group {
     margin-bottom: 15px;
+    margin-right:15px;
 }
 
 label {
