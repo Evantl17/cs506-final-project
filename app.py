@@ -1,6 +1,6 @@
 import yfinance as yf
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from volatility import calculate_volatility, plot_three_portfolios_with_regression, create_tables_with_buckets
 import matplotlib
 matplotlib.use('Agg')  # Use a backend that doesn't require a display
@@ -15,6 +15,11 @@ app = Flask(__name__)
 sp500_info = pd.read_csv('CSVs/sp500_tickers_full_info.csv')
 # Create a dictionary keyed by Ticker for quick lookups
 sp500_info_dict = sp500_info.set_index('Ticker').to_dict(orient='index')
+ticker_list = sp500_info['Ticker'].tolist()
+
+@app.route('/get-tickers', methods=['GET'])
+def get_tickers():
+    return jsonify(ticker_list)  # Send the list as a JSON response
 
 def is_valid_ticker(ticker):
     # Convert all tickers in the CSV to uppercase
