@@ -7,35 +7,16 @@ matplotlib.use('Agg')  # Use a backend that doesn't require a display
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
-
 app = Flask(__name__)
 
 # Function to validate the ticker
 def is_valid_ticker(ticker):
-    try:
-        stock = yf.Ticker(ticker)
-        info = stock.info
-        print(f"Info for {ticker}: {info}")
-
-        # Check metadata
-        has_metadata = info and 'shortName' in info and info['shortName'] is not None
-        if not has_metadata:
-            print(f"Ticker {ticker} failed metadata check.")
-            return False
-
-        # Check historical price data
-        history = stock.history(period="1y")
-        print(f"History for {ticker}: {history}")
-        has_price_data = not history.empty
-        if not has_price_data:
-            print(f"Ticker {ticker} failed price data check.")
-            return False
-
-        return has_metadata and has_price_data
-    except Exception as e:
-        print(f"Error validating ticker {ticker}: {e}")
-        return False
-
+    sp500 = pd.read_csv('CSVs/sp500_tickers_full_info.csv')
+    # Convert all tickers in the CSV to uppercase
+    sp500_tickers = [t.upper() for t in sp500['Ticker'].tolist()]
+    
+    # Check if the provided ticker (in uppercase) is in the S&P 500 ticker list
+    return ticker.upper() in sp500_tickers
 
 @app.route('/')
 def index():
@@ -58,7 +39,7 @@ def submit():
         tickers_list = request.form.getlist('tickers')
         prices_list = request.form.getlist('prices')
 
-        # Validate tickers
+        # Validate tickers: normalize to uppercase first
         tickers_list = [ticker.strip().upper() for ticker in tickers_list]
         valid_tickers = [ticker for ticker in tickers_list if is_valid_ticker(ticker)]
         invalid_tickers = [ticker for ticker in tickers_list if ticker not in valid_tickers]
