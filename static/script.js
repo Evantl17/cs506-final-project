@@ -2,7 +2,7 @@ let inputGroupCounter = 1; // Counter to keep track of the input group numbers
 
 let tickers = []; // Global array to store tickers fetched from the backend
 
-    // Fetch tickers from the Flask backend
+// Fetch tickers from the Flask backend
 async function fetchTickers() {
     try {
         const response = await fetch('http://127.0.0.1:3000/get-tickers'); // Flask URL
