@@ -9,9 +9,9 @@
 
     <style>
         h1 {
-            text-align: center; /* Centers the heading */
-            margin-top: 20px; /* Adds some space above */
-            font-size: 2.5rem; /* Optional: Adjust the font size */
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.5rem;
         }
         .data-table {
             width: 100%;
@@ -48,12 +48,56 @@
         .section {
             margin-bottom: 40px;
         }
+
+        /* Netflix-style horizontal scroll */
+        .horizontal-scroll-container { display: flex; justify-content: space-evenly; align-items: center; /* Align vertically (optional) */ gap: 20px; overflow-x: auto; padding: 20px 0; scroll-behavior: smooth; }
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+        .horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .stock-card {
+            flex: 0 0 auto;
+            width: 200px;
+            min-height: 150px;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .stock-card p {
+            margin: 5px 0;
+        }
+        .company-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .company-ticker {
+            color: #555;
+        }
+        .company-price {
+            color: #007b00; /* A subtle green to indicate a price */
+            font-weight: bold;
+        }
     </style>
 </head>
 <script>
-    // Wait for the document to fully load
     document.addEventListener("DOMContentLoaded", function () {
-        // Select all tables with the class 'data-table'
         const tables = document.querySelectorAll(".data-table");
 
         tables.forEach(table => {
@@ -92,8 +136,9 @@
                 });
             });
 
-            // Highlight volatility cells based on their values
-            const volatilityCells = table.querySelectorAll("td:nth-child(3)"); // Assuming the 3rd column is Volatility
+            // Highlight volatility cells based on their values (Assuming the 3rd column is Volatility)
+            // If the volatility column is located at a different column index, adjust the nth-child().
+            const volatilityCells = table.querySelectorAll("td:nth-child(3)");
             volatilityCells.forEach(cell => {
                 const value = cell.textContent.trim();
 
@@ -151,5 +196,26 @@
             </div>
         </div>
     </div>
+
+    {% if similar_companies %}
+    <div class="section">
+        <h2>Similar Companies</h2>
+        {% for base_ticker, sims in similar_companies.items() %}
+            {% if sims|length > 0 %}
+                <h3>Because you're investing in {{ base_ticker }} ...</h3>
+                <div class="horizontal-scroll-container">
+                    {% for sim in sims %}
+                    <div class="stock-card">
+                        <p class="company-name">{{ sim.name }}</p>
+                        <p class="company-ticker">({{ sim.ticker }})</p>
+                        <p class="company-price">${{ sim.price }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
 </body>
 </html>

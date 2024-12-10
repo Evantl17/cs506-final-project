@@ -46,8 +46,6 @@ def SimiliarCompany(ticker, cluster_df):
 
     company_cluster = cluster_df[cluster_df['Ticker'] == ticker]['Cluster'].iloc[0]
     companies_in_cluster = cluster_df[cluster_df['Cluster'] == company_cluster]
-    if companies_in_cluster.shape[0] == 1:
-        return [ticker],[ticker]
     similiar_companies_list = companies_in_cluster['Ticker'].tolist()
 
     company_industry = cluster_df[cluster_df['Ticker'] == ticker]['sector'].iloc[0]
@@ -59,4 +57,4 @@ def SimiliarCompany(ticker, cluster_df):
     if ticker in similiar_sector_list:
         similiar_sector_list.remove(ticker)
 
-    return similiar_companies_list, similiar_sector_list
+    return similiar_companies_list
