@@ -3,3 +3,4 @@ pandas
 flask
 matplotlib
 numpy
+scikit-learn
