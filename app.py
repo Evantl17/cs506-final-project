@@ -12,14 +12,27 @@ def is_valid_ticker(ticker):
     try:
         stock = yf.Ticker(ticker)
         info = stock.info
+        print(f"Info for {ticker}: {info}")
 
-        # Check if ticker has a valid shortName and historical price data
+        # Check metadata
         has_metadata = info and 'shortName' in info and info['shortName'] is not None
-        has_price_data = not stock.history(period="1y").empty
+        if not has_metadata:
+            print(f"Ticker {ticker} failed metadata check.")
+            return False
+
+        # Check historical price data
+        history = stock.history(period="1y")
+        print(f"History for {ticker}: {history}")
+        has_price_data = not history.empty
+        if not has_price_data:
+            print(f"Ticker {ticker} failed price data check.")
+            return False
 
         return has_metadata and has_price_data
-    except Exception:
+    except Exception as e:
+        print(f"Error validating ticker {ticker}: {e}")
         return False
+
 
 @app.route('/')
 def index():
@@ -74,7 +87,7 @@ def submit():
 
         # Proceed with valid tickers and prices
         table1, table2 = create_tables_with_buckets(valid_tickers)
-        all_closings = pd.read_csv('closingPrices.csv')
+        all_closings = pd.read_csv('CSVs/closingPrices.csv')
         ticker_list = table1['Ticker'].tolist()
         suggested_ticker_list = table2['Suggested Ticker'].tolist()
 

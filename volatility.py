@@ -105,7 +105,7 @@ def categorize_volatility(volatility):
         return "Extreme Volatility"
 
 def create_tables_with_buckets(tickers):
-    sp500_tickers = pd.read_csv('sp500_tickers_full_info.csv')
+    sp500_tickers = pd.read_csv('CSVs/sp500_tickers_full_info.csv')
 
     current_table = pd.DataFrame(columns=['Ticker', 'Industry', 'Volatility'])
     suggested_table = pd.DataFrame(columns=['Suggested Ticker', 'Industry', 'Suggested Volatility'])
