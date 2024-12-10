@@ -7,7 +7,7 @@ make run     # Run analysis
 make test    # Run tests
 ```
 
-#Project Inspiration
+##Project Inspiration
 When starting this project, we knew we wanted to do something finance related, but weren’t sure what to do. When looking at what problems most investors face, we saw that most investors make on average much lower returns than the market average. This has been proven by multiple studies, such as the Dalbar study, which generally shows that the average investor underperforms the market by a wide margin. For example, in 2018, the S&P 500 index returned -4.38%. The average equity mutual fund investor was down -9.42%. That's more than double. 
 
 Therefore, our solution was to try to give the average investor closer to market returns. To do this, our approach was to choose substitute companies with the lowest volatility in each of the industries of the user’s current companies. We would also have other companies similar to the ones chosen by the user shown at the bottom, and the user can view their new portfolio with any of those companies as well.
