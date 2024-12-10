@@ -4,6 +4,9 @@ from flask import Flask, render_template, request, redirect, url_for
 from volatility import calculate_volatility, plot_three_portfolios_with_regression, create_tables_with_buckets
 import matplotlib
 matplotlib.use('Agg')  # Use a backend that doesn't require a display
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
 
 app = Flask(__name__)
 
