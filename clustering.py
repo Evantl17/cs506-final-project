@@ -7,13 +7,13 @@ from sklearn.cluster import KMeans
 def create_clusters():
     df = pd.read_csv('CSVs/sp500_tickers_full_info.csv')
     numeric_columns = df.select_dtypes(include=['number'])
-    df_numeric = df[['Ticker','sector']].join(df.select_dtypes(include=['number']))
+    df_numeric = df[['Ticker','sector','shortName']].join(df.select_dtypes(include=['number']))
     df_numeric = df_numeric.replace([np.inf, -np.inf], np.nan)
     # Select only numeric columns and fill NaNs with their mean
     numeric_cols = df_numeric.select_dtypes(include=["number"])
     df_numeric[numeric_cols.columns] = numeric_cols.fillna(numeric_cols.mean())
 
-    numeric_features = df_numeric.drop(columns=["Ticker", "sector"])
+    numeric_features = df_numeric.drop(columns=["Ticker", "sector",'shortName'])
     correlation_matrix = numeric_features.corr().abs()
 
     # Select upper triangle of correlation matrix
@@ -38,23 +38,29 @@ def create_clusters():
     kmeans = KMeans(n_clusters=75, init="k-means++", random_state=42)
     df_numeric["Cluster"] = kmeans.fit_predict(scaled_features)
 
-    df_numeric_with_cluster = df[["Ticker", "sector"]].join(df_numeric[["Cluster"]])
+    df_numeric_with_cluster = df[["Ticker", "sector",'shortName']].join(df_numeric[["Cluster"]])
 
     return df_numeric_with_cluster
 
 def SimiliarCompany(ticker, cluster_df):
+    
+    
+    filtered_df = cluster_df[(pd.notna(cluster_df['shortName'])) & (cluster_df['shortName'] != "")]
 
-    company_cluster = cluster_df[cluster_df['Ticker'] == ticker]['Cluster'].iloc[0]
-    companies_in_cluster = cluster_df[cluster_df['Cluster'] == company_cluster]
+    company_cluster = filtered_df[filtered_df['Ticker'] == ticker]['Cluster'].iloc[0]
+
+    companies_in_cluster = filtered_df[filtered_df['Cluster'] == company_cluster]
     similiar_companies_list = companies_in_cluster['Ticker'].tolist()
 
-    company_industry = cluster_df[cluster_df['Ticker'] == ticker]['sector'].iloc[0]
-    companies_in_Sector = companies_in_cluster[companies_in_cluster['sector'] == company_industry]
-    similiar_sector_list = companies_in_Sector['Ticker'].tolist()
+    company_industry = filtered_df[filtered_df['Ticker'] == ticker]['sector'].iloc[0]
+    companies_in_sector = companies_in_cluster[companies_in_cluster['sector'] == company_industry]
+    similiar_sector_list = companies_in_sector['Ticker'].tolist()
 
     if ticker in similiar_companies_list:
         similiar_companies_list.remove(ticker)
     if ticker in similiar_sector_list:
         similiar_sector_list.remove(ticker)
-
+        
+    print("Similar companies:", similiar_companies_list)
+    
     return similiar_companies_list
