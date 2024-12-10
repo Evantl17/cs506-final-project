@@ -49,8 +49,15 @@
             margin-bottom: 40px;
         }
 
-        /* Netflix-style horizontal scroll */
-        .horizontal-scroll-container { display: flex; justify-content: space-evenly; align-items: center; /* Align vertically (optional) */ gap: 20px; overflow-x: auto; padding: 20px 0; scroll-behavior: smooth; }
+        .horizontal-scroll-container { 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+            gap: 20px; 
+            overflow-x: auto; 
+            padding: 20px 0; 
+            scroll-behavior: smooth; 
+        }
         .horizontal-scroll-container::-webkit-scrollbar {
             height: 8px;
         }
@@ -63,7 +70,7 @@
         .horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
-        
+
         .stock-card {
             flex: 0 0 auto;
             width: 200px;
@@ -79,6 +86,15 @@
             padding: 10px;
             box-sizing: border-box;
             text-align: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        .stock-card:hover {
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+        }
+        .stock-card.selected {
+            border-color: #007bff;
+            box-shadow: 0px 4px 15px rgba(0,123,255,0.4);
         }
         .stock-card p {
             margin: 5px 0;
@@ -91,8 +107,23 @@
             color: #555;
         }
         .company-price {
-            color: #007b00; /* A subtle green to indicate a price */
+            color: #007b00;
             font-weight: bold;
+        }
+
+        .recalc-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .recalc-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -101,17 +132,14 @@
         const tables = document.querySelectorAll(".data-table");
 
         tables.forEach(table => {
-            // Add rounded corners to the table
+            // Add rounded corners and styles
             table.style.borderCollapse = "separate";
             table.style.borderSpacing = "0";
             table.style.borderRadius = "8px";
             table.style.overflow = "hidden";
-
-            // Add box shadow for aesthetics
             table.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
-
-            // Adjust font size and cell padding
             table.style.fontSize = "16px";
+
             const cells = table.querySelectorAll("th, td");
             cells.forEach(cell => {
                 cell.style.padding = "12px";
@@ -119,13 +147,11 @@
                 cell.style.textAlign = "center";
             });
 
-            // Style the header row
             const headers = table.querySelectorAll("th");
             headers.forEach(header => {
                 header.style.backgroundColor = "#f2f2f2";
             });
 
-            // Add hover effect for table rows
             const rows = table.querySelectorAll("tbody tr");
             rows.forEach(row => {
                 row.addEventListener("mouseover", () => {
@@ -136,22 +162,43 @@
                 });
             });
 
-            // Highlight volatility cells based on their values (Assuming the 3rd column is Volatility)
-            // If the volatility column is located at a different column index, adjust the nth-child().
             const volatilityCells = table.querySelectorAll("td:nth-child(3)");
             volatilityCells.forEach(cell => {
                 const value = cell.textContent.trim();
-
-                // Apply background color based on volatility category
                 if (value === "Low Volatility") {
-                    cell.style.backgroundColor = "#d4edda"; // Greenish
+                    cell.style.backgroundColor = "#d4edda";
                 } else if (value === "Moderate Volatility") {
-                    cell.style.backgroundColor = "#fff3cd"; // Yellowish
+                    cell.style.backgroundColor = "#fff3cd";
                 } else if (value === "High Volatility") {
-                    cell.style.backgroundColor = "#f8d7da"; // Light Reddish
+                    cell.style.backgroundColor = "#f8d7da";
                 } else if (value === "Extreme Volatility") {
-                    cell.style.backgroundColor = "#f5c6cb"; // Darker Reddish
+                    cell.style.backgroundColor = "#f5c6cb";
                 }
+            });
+        });
+
+        // Handle clicks on similar company cards
+        document.querySelectorAll('.horizontal-scroll-container').forEach(container => {
+            container.addEventListener('click', function(e) {
+                const card = e.target.closest('.stock-card');
+                if (!card) return;
+
+                // base_ticker is extracted from a parent element or data attribute
+                const baseTicker = card.closest('.similar-section').getAttribute('data-base-ticker');
+                const hiddenInput = document.querySelector(`input[name="replacement_${baseTicker}"]`);
+                if (!hiddenInput) return;
+
+                // Unselect previously selected card if any
+                const selectedCard = container.querySelector('.stock-card.selected');
+                if (selectedCard) {
+                    selectedCard.classList.remove('selected');
+                }
+
+                // Mark this card as selected
+                card.classList.add('selected');
+
+                // Set the hidden input to the chosen ticker
+                hiddenInput.value = card.getAttribute('data-ticker');
             });
         });
     });
@@ -164,9 +211,7 @@
         <h2>User Portfolio</h2>
         <div class="flex-container">
             <div class="flex-item">
-                <table class="data-table">
-                    {{ table1 | safe }}
-                </table>
+                {{ table1 | safe }}
             </div>
             <div class="flex-item">
                 <img src="{{ url_for('static', filename='images/user_portfolio_projection.png') }}" alt="User Portfolio Projection">
@@ -178,9 +223,7 @@
         <h2>Suggested Portfolio</h2>
         <div class="flex-container">
             <div class="flex-item">
-                <table class="data-table">
-                    {{ table2 | safe }}
-                </table>
+                {{ table2 | safe }}
             </div>
             <div class="flex-item">
                 <img src="{{ url_for('static', filename='images/suggested_portfolio_projection.png') }}" alt="Suggested Portfolio Projection">
@@ -200,20 +243,28 @@
     {% if similar_companies %}
     <div class="section">
         <h2>Similar Companies</h2>
-        {% for base_ticker, sims in similar_companies.items() %}
-            {% if sims|length > 0 %}
-                <h3>Because you're investing in {{ base_ticker }} ...</h3>
-                <div class="horizontal-scroll-container">
-                    {% for sim in sims %}
-                    <div class="stock-card">
-                        <p class="company-name">{{ sim.name }}</p>
-                        <p class="company-ticker">({{ sim.ticker }})</p>
-                        <p class="company-price">${{ sim.price }}</p>
+        <form action="{{ url_for('bulk_replace') }}" method="POST">
+            {% for base_ticker, sims in similar_companies.items() %}
+                {% if sims|length > 0 %}
+                    <div class="similar-section" data-base-ticker="{{ base_ticker }}">
+                        <h3>Because you're investing in {{ base_ticker }} ...</h3>
+                        <!-- Hidden input to store the chosen replacement for this ticker -->
+                        <input type="hidden" name="replacement_{{ base_ticker }}" value="">
+
+                        <div class="horizontal-scroll-container">
+                            {% for sim in sims %}
+                            <div class="stock-card" data-ticker="{{ sim.ticker }}">
+                                <p class="company-name">{{ sim.name }}</p>
+                                <p class="company-ticker">({{ sim.ticker }})</p>
+                                <p class="company-price">${{ sim.price }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="recalc-button">Recalculate Portfolio</button>
+        </form>
     </div>
     {% endif %}
 
