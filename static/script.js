@@ -1,5 +1,21 @@
 let inputGroupCounter = 1; // Counter to keep track of the input group numbers
 
+let tickers = []; // Global array to store tickers fetched from the backend
+
+    // Fetch tickers from the Flask backend
+async function fetchTickers() {
+    try {
+        const response = await fetch('http://127.0.0.1:3000/get-tickers'); // Flask URL
+        tickers = await response.json();
+    } catch (error) {
+        console.error('Error fetching tickers:', error);
+    }
+}
+
+// Call fetchTickers when the page loads
+window.onload = fetchTickers;
+
+
 // Function to initialize the first input group
 function initializeFirstInputGroup() {
     const inputContainer = document.querySelector('.input-container');
@@ -32,6 +48,36 @@ function addInputFields(ticker = '', price = '') {
     stockInput.name = 'tickers';
     stockInput.required = true;
     stockInput.value = ticker; // Pre-fill with passed value if provided
+    stockInput.className = 'stock-input'; // Add class for targeting
+    const suggestionBox = document.createElement('div');
+    suggestionBox.className = 'autocomplete-suggestions';
+
+    // Add event listener for autocomplete
+    stockInput.addEventListener('input', function () {
+        const query = stockInput.value.toLowerCase();
+        suggestionBox.innerHTML = ''; // Clear existing suggestions
+
+        if (query.length === 0) return; // Don't show suggestions for empty input
+
+        // Filter tickers based on user input
+        const matches = tickers.filter(ticker =>
+            ticker.toLowerCase().startsWith(query)
+        );
+
+        // Generate suggestion elements
+        matches.forEach(match => {
+            const suggestion = document.createElement('div');
+            suggestion.textContent = match;
+
+            // On click, fill the input with the selected value
+            suggestion.addEventListener('click', function () {
+                stockInput.value = match;
+                suggestionBox.innerHTML = ''; // Clear suggestions
+            });
+
+            suggestionBox.appendChild(suggestion);
+        });
+    });
 
     // Create the price input
     const priceLabel = document.createElement('label');
@@ -54,6 +100,7 @@ function addInputFields(ticker = '', price = '') {
     newInputGroup.appendChild(numberLabel);
     newInputGroup.appendChild(stockLabel);
     newInputGroup.appendChild(stockInput);
+    newInputGroup.appendChild(suggestionBox); // Add suggestion box here
     newInputGroup.appendChild(document.createElement('br'));
     newInputGroup.appendChild(priceLabel);
     newInputGroup.appendChild(priceInput);
