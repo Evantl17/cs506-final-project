@@ -36,7 +36,7 @@ def submit():
     table1, table2 = create_tables_with_buckets(valid_tickers)
     
         
-    all_closings = pd.read_csv('closingPrices.csv')
+    all_closings = pd.read_csv('CSVs/closingPrices.csv')
     ticker_list = table1['Ticker'].tolist()
     suggested_ticker_list = table2['Suggested Ticker'].tolist()
     

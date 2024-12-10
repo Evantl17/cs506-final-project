@@ -32,7 +32,7 @@ print("CSV file 'sp500_tickers_full_info.csv' has been created.")
 
 # Create a CSV file with closing prices for each ticker
 
-csv_output = 'closingPrices.csv'
+csv_output = 'CSVs/closingPrices.csv'
 prices = pd.read_csv(csv_output)
 tickers = prices['Ticker'].unique()
 
