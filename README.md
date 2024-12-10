@@ -1,7 +1,7 @@
 # CS506 Final Project - Portfolio Analysis
 
 ## How to Build and Run
-1. ```
+```
 make install  # Install dependencies
 make run     # Run analysis
 make test    # Run tests
