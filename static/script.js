@@ -81,7 +81,7 @@ function addInputFields(ticker = '', price = '') {
 
     // Create the price input
     const priceLabel = document.createElement('label');
-    priceLabel.innerText = 'Price per Stock (dollar amount):';
+    priceLabel.innerText = 'Dollar Amount Invested (USD):';
     const priceInput = document.createElement('input');
     priceInput.type = 'text';
     priceInput.name = 'prices';
