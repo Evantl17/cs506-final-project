@@ -1,6 +1,6 @@
 let inputGroupCounter = 1; // Counter to keep track of the input group numbers
 
-// Function to initialize the first input group with a number
+// Function to initialize the first input group
 function initializeFirstInputGroup() {
     const inputContainer = document.querySelector('.input-container');
     const firstInputGroup = inputContainer.querySelector('.input-group');
@@ -14,8 +14,8 @@ function initializeFirstInputGroup() {
     inputGroupCounter++; // Increment the counter for the next input group
 }
 
-// Function to add more input boxes for stock and price
-function addInputFields() {
+// Function to add a new input group
+function addInputFields(ticker = '', price = '') {
     const inputContainer = document.querySelector('.input-container');
     const newInputGroup = document.createElement('div');
     newInputGroup.className = 'input-group';
@@ -23,7 +23,6 @@ function addInputFields() {
     // Create the number label
     const numberLabel = document.createElement('span');
     numberLabel.className = 'input-number';
-    numberLabel.innerText = `${inputGroupCounter}. `;
 
     // Create the stock ticker input
     const stockLabel = document.createElement('label');
@@ -32,6 +31,7 @@ function addInputFields() {
     stockInput.type = 'text';
     stockInput.name = 'tickers';
     stockInput.required = true;
+    stockInput.value = ticker; // Pre-fill with passed value if provided
 
     // Create the price input
     const priceLabel = document.createElement('label');
@@ -39,14 +39,15 @@ function addInputFields() {
     const priceInput = document.createElement('input');
     priceInput.type = 'text';
     priceInput.name = 'prices';
+    priceInput.value = price; // Pre-fill with passed value if provided
 
     // Create the delete button
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.innerText = 'Delete';
-    deleteButton.onclick = function() {
+    deleteButton.onclick = function () {
         inputContainer.removeChild(newInputGroup);
-        updateInputGroupNumbers();
+        updateInputGroupNumbers(); // Update numbering after removing
     };
 
     // Append the elements to the new input group
@@ -60,18 +61,75 @@ function addInputFields() {
     newInputGroup.appendChild(deleteButton);
 
     inputContainer.appendChild(newInputGroup);
-    inputGroupCounter++;
+    updateInputGroupNumbers(); // Update numbering after adding
 }
 
 // Function to update input group numbers
 function updateInputGroupNumbers() {
     const inputGroups = document.querySelectorAll('.input-group');
-    inputGroupCounter = 1;
-    inputGroups.forEach(group => {
+    inputGroupCounter = 1; // Reset counter
+    inputGroups.forEach((group) => {
         const numberLabel = group.querySelector('.input-number');
-        numberLabel.innerText = `${inputGroupCounter}. `;
-        inputGroupCounter++;
+        if (numberLabel) {
+            numberLabel.innerText = `${inputGroupCounter}. `; // Update the number
+        }
+        inputGroupCounter++; // Increment counter
     });
 }
 
-document.addEventListener('DOMContentLoaded', initializeFirstInputGroup);
+// Ensure the loading screen is hidden when the page loads or is restored from the cache
+function hideLoadingScreen() {
+    document.getElementById('loading-screen').style.display = 'none';
+}
+
+// Listen for the `pageshow` event to hide the loading screen on navigation
+window.addEventListener('pageshow', hideLoadingScreen);
+
+// Initialize input groups with retained data
+function initializeInputGroups(tickerData = [], priceData = []) {
+    const inputContainer = document.querySelector('.input-container');
+
+    // Clear existing input groups
+    inputContainer.innerHTML = '';
+
+    // Populate the input groups with existing data
+    for (let i = 0; i < tickerData.length; i++) {
+        const ticker = tickerData[i];
+        const price = priceData[i] || '';
+        addInputFields(ticker, price);
+    }
+
+    // If no data, initialize the first empty input group
+    if (tickerData.length === 0) {
+        addInputFields();
+    }
+}
+
+// Add event listener for hiding the loading screen on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    hideLoadingScreen();
+
+    // Retrieve retained tickers and prices (if available)
+    const retainedTickers = JSON.parse(
+        document.getElementById('retained-tickers')?.value || '[]'
+    );
+    const retainedPrices = JSON.parse(
+        document.getElementById('retained-prices')?.value || '[]'
+    );
+
+    // Initialize input groups with retained values
+    initializeInputGroups(retainedTickers, retainedPrices);
+});
+
+// Show the loading screen on form submission
+document.querySelector('form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Show the loading screen
+    document.getElementById('loading-screen').style.display = 'flex';
+
+    // Simulate form submission delay (for demonstration purposes)
+    setTimeout(() => {
+        event.target.submit(); // Programmatically submit the form
+    }, 1000); // Adjust delay if needed
+});
