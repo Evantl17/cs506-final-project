@@ -31,30 +31,30 @@
         </div>
         {% endif %}
 
-        <form action="/submit" method="POST">
+        <form action="/submit" method="POST" autocomplete="off">
             <div class="input-container">
                 {% for ticker, price in ticker_price_pairs %}
                 <div class="input-group">
                     <label for="tickers">Stock Ticker:</label><br>
-                    <input type="text" name="tickers" value="{{ ticker }}" required><br><br>
+                    <input type="text" name="tickers" value="{{ ticker }}" required autocomplete="off"><br><br>
                     <label for="prices">Price per Stock (dollar amount):</label><br>
-                    <input type="text" name="prices" value="{{ price }}"><br><br>
+                    <input type="text" name="prices" value="{{ price }}" autocomplete="off"><br><br>
                 </div>
                 {% endfor %}
-
+        
                 {% if ticker_price_pairs|length == 0 %}
                 <!-- Add one empty input group if no data -->
                 <div class="input-group">
                     <label for="tickers">Stock Ticker:</label><br>
-                    <input type="text" name="tickers" required><br><br>
+                    <input type="text" name="tickers" required autocomplete="off"><br><br>
                     <label for="prices">Price per Stock (dollar amount):</label><br>
-                    <input type="text" name="prices"><br><br>
+                    <input type="text" name="prices" autocomplete="off"><br><br>
                 </div>
                 {% endif %}
             </div>
             <button type="button" onclick="addInputFields()">Add More</button><br><br>
             <input type="submit" value="Submit">
-        </form>
+        </form>        
     </div>
     <div id="loading-screen" style="display: none;">
         <div class="loading-content">
