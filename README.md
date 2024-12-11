@@ -22,8 +22,8 @@ The market data for this tool is accessed from yfinance. We made two data sets, 
 The K-means clustering is used to group the user-inputted stocks with similar companies so that they can build different portfolios with companies similar to their current portfolio. The K-means algorithm assigns a cluster to each company in the S&P500 so the user can see all other companies in each entered companies cluster. To select features for this algorithm we used a correlation matrix to only include features that had less than a 0.85 correlation, in order to avoid multicollinearity. We also only used numeric features. After reducing the features, we used around 62 features. We also changed the parameters of the K-means algorithm to use k-means++ to choose the initial centroids, and we chose to use 75 different clusters. We wanted to pick a number of clusters where each cluster would include multiple companies. While it was not possible to get a perfect distribution, we found that 75 clusters gave a good distribution in terms of companies in each cluster, and reduced the amount of clusters with only one company in it. Finally, we set a random_state = 42 to have reproducible results each time we ran our algorithm. This clustering algorithm was then used in the front end to give new options to the user.
 
 ## Demo Video / Example Usage
-[Watch the demo on YouTube](https://youtu.be/J7ZJD8LqPIA)  
-Short demo of the application in use. (show some visualizations)
+[Watch the demo on YouTube](https://youtu.be/-_rtUkBWuj8)  
+Short demo of the application in use.
 
 ## Progress Since Midterm
 Since the midterm, we have continued to work on fine-tuning the models we already had, and we added the suggestion company based on a K-means clustering algorithm. We also increased usability in the front end with autofill and error checking. Users can now click the suggested company, and it will insert them into the perspective portfolio to show projections with that new company included. Midterm demo video: [Watch the demo on YouTube](https://youtu.be/J7ZJD8LqPIA)  
