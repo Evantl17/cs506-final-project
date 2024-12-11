@@ -25,6 +25,12 @@ The K-means clustering is used to group the user-inputted stocks with similar co
 [Watch the demo on YouTube](https://youtu.be/-_rtUkBWuj8)  
 Short demo of the application in use.
 
+![Image 1](examples/user-full.png)
+
+<p align="center">
+<img src="examples/suggested-graph.png" width="50%">
+</p>
+
 ## Progress Since Midterm
 Since the midterm, we have continued to work on fine-tuning the models we already had, and we added the suggestion company based on a K-means clustering algorithm. We also increased usability in the front end with autofill and error checking. Users can now click the suggested company, and it will insert them into the perspective portfolio to show projections with that new company included. Midterm demo video: [Watch the demo on YouTube](https://youtu.be/J7ZJD8LqPIA)  
 
